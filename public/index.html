@@ -78,7 +78,9 @@
         <h1>Namida ver 0.1</h1>
     </div> -->
     <div class="app">
-        <div id="chat-container" style="position: absolute; top: 150px; left: 100px; font-family: Roboto; font-style: normal; font-weight: 300; color: white"></div>
+        <div id="chat-container" style="position: absolute; top: 150px; left: 100px; font-family: Roboto; font-style: normal; font-weight: 300; color: white">
+         <!-- <div id="user-messages"></div>-->
+        </div>
         <div class="user">
             <input id="user-input" type="text" style="position: relative; width: 1000px; height: 50px; border-radius: 20px; top: 700px; right: 200px; font-size: 16px; font-family: IBM Plex Sans; font-weight: 200; font-style: light; background: #908798;" placeholder="Escribe tu mensaje para Namida...">
                 <button style="font-size: 12px; font-family: Roboto; font-weight: 200; font-style: normal; position: relative; top:700px; left: 820px; top: 665px;" id="send-button">Enviar</button>
@@ -97,15 +99,23 @@
                 document.getElementById('chat-container').innerHTML += '<br>' + data.response
             }
         })
-
         // Define event listener to button that submits promt to server
         document.getElementById('send-button').addEventListener('click', () => {
             const prompt = document.getElementById('user-input').value
             if (prompt.length > 0) {
-                if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'completion-request', prompt: prompt }))
-            }
+                if (socket.readyState === WebSocket.OPEN) {
+                // Enviar mensaje del usuario al servidor
+                socket.send(JSON.stringify({ type: 'completion-request', prompt: prompt }));
+                // Mostrar el mensaje del usuario en el contenedor "user-messages"
+                const userMessagesContainer = document.getElementById('user-messages');
+                const userMessageElement = document.createElement('p');
+                userMessageElement.textContent = prompt;
+                userMessagesContainer.appendChild(userMessageElement);
+                // Limpiar el campo de entrada del usuario
             document.getElementById('user-input').value = ''
-        })
+            }
+        }
+    });
     </script>
 </body>
 
